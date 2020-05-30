@@ -1,0 +1,11 @@
+types:
+STR (string)
+NUM (number)
+VEC (vector)
+
+structure:
+SERVER/CLIENT>
+if CLIENT: NAME_LEN, NAME, TYPE, DATA_LEN, DATA
+if SERVER: MESSAGE
+
+*used start word: prologrfootrimplix #change this later please.
