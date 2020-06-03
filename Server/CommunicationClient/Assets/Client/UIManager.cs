@@ -33,6 +33,10 @@ public class UIManager : MonoBehaviour
 
     public void UpdateServerText(string msg)
     {
+        if(serverText == null)
+        {
+            return;
+        }
         serverText.text = msg;
     }
 

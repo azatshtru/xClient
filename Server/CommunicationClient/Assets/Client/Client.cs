@@ -12,19 +12,27 @@ public class Client : MonoBehaviour
 {
     public static Client Instance;
 
+    public GameObject playerSelfPrefab;
     public GameObject playerPrefab;
 
+    public int millisecondsToRefresh;
     public int maxPlayers;
     public string ipAddress;
     public int portNumber;
 
     TcpClient client;
 
+    NetworkSpawn[] spawnPositions;
+
     private string playerName;
 
+    Vector3 currentVector;
     string message;
+    string currentSender;
+
     bool execute;
     bool executeInstantiation;
+    bool execVector;
 
     List<string> playersNames = new List<string>(); //IMPORTANT: Please do this later with Player Objects and in dictionary.
 
@@ -35,6 +43,11 @@ public class Client : MonoBehaviour
             Destroy(Instance);
         }
         Instance = this;
+    }
+
+    private void Start()
+    {
+        spawnPositions = FindObjectsOfType<NetworkSpawn>();
     }
 
     public void SetLocalClientName(string _name)
@@ -51,7 +64,7 @@ public class Client : MonoBehaviour
         Thread thread = new Thread(job);
         thread.Start();
 
-        playersNames.Add(playerName);
+        //playersNames.Add(playerName);
     }
 
     // Update is called once per frame
@@ -74,6 +87,12 @@ public class Client : MonoBehaviour
             //UIManager.Instance.UpdateServerText(s);
             executeInstantiation = false;
         }
+
+        if (execVector)
+        {
+            GameManager.Instance.HandleVectors(currentSender, currentVector);
+            execVector = false;
+        }
     }
 
     void StringCallback(string sender, string data)
@@ -85,7 +104,7 @@ public class Client : MonoBehaviour
                 return;
             }
             playersNames.Add(sender);
-            if(playersNames.Count == maxPlayers)
+            if(playersNames.Count == maxPlayers - 1)
             {
                 executeInstantiation = true;
             }
@@ -102,26 +121,48 @@ public class Client : MonoBehaviour
 
     void VectorCallback (string sender, Vector3 vector)
     {
-        //do something with the data.
+        Debug.Log(vector);
+        currentSender = sender;
+        currentVector = vector;
+        execVector = true;
     }
 
     void InstantiatePlayers()
     {
         foreach(string player in playersNames)
         {
-            GameObject playerGO = Instantiate(playerPrefab);
-            playerGO.name = player;
+            foreach (NetworkSpawn spawn in spawnPositions)
+            {
+                if (!spawn.GetSpawned())
+                {
+                    GameObject playerGO = Instantiate(playerPrefab, spawn.transform.position, Quaternion.identity);
+                    playerGO.name = player;
+                    spawn.SetSpawned();
+                    break;
+                }
+            }
         }
+        foreach (NetworkSpawn spawn in spawnPositions)
+        {
+            if (!spawn.GetSpawned())
+            {
+                GameObject playerSGO = Instantiate(playerSelfPrefab, spawn.transform.position, Quaternion.identity);
+                playerSGO.name = playerName;
+                spawn.SetSpawned();
+                break;
+            }
+        }
+        GameManager.Instance.InstantiateNetworkPlayers();
     }
 
     void GetData ()
     {
+
+        NetworkStream stream = client.GetStream();
+
         while (true)
         {
-
-            NetworkStream stream = client.GetStream();
-
-            Thread.Sleep(250);
+            Thread.Sleep(millisecondsToRefresh);
 
             //Check server/client.
             byte[] checkBytes = new byte[6];
@@ -377,6 +418,7 @@ public class Client : MonoBehaviour
             Array.Reverse(yBytes);
             Array.Reverse(zBytes);
         }
+
         byte[] msgInBytes = xBytes.Concat(yBytes).Concat(zBytes).ToArray();
 
         byte[] combyte = checkBytes.Concat(lenBytes).Concat(nameBytes).Concat(typeBytes).Concat(dataLenBytes).Concat(msgInBytes).ToArray();
