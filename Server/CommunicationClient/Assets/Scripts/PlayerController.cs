@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float gravityMultiplier = 1.4f;
 
     Rigidbody rb;
+    Vector3 movement;
     bool isGrounded;
 
     // Start is called before the first frame update
@@ -18,12 +20,16 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float _x = Input.GetAxisRaw("Horizontal");
-        Vector3 movement = Vector3.right * _x * Time.fixedDeltaTime * playerSpeed;
-
         rb.MovePosition(rb.position + movement);
+    }
+
+    private void Update()
+    {
+
+        float _x = Input.GetAxisRaw("Horizontal");
+        movement = Vector3.right * _x * Time.fixedDeltaTime * playerSpeed;
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
@@ -31,7 +37,7 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
 
-        if(isGrounded == false && rb.velocity.y < 1f)
+        if (isGrounded == false && rb.velocity.y < 1f)
         {
             rb.AddForce(Vector3.down * Mathf.Abs((rb.velocity.y) * gravityMultiplier), ForceMode.Acceleration);
         }

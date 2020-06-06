@@ -2,6 +2,7 @@ types:
 STR (string)
 NUM (number)
 VEC (vector)
+RAY (2 vectors)
 
 structure:
 SERVER/CLIENT>

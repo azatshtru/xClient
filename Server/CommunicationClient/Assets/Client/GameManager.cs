@@ -30,4 +30,9 @@ public class GameManager : MonoBehaviour
     {
         networkPlayers[_name].UpdatePosition(posn);
     }
+
+    public void HandleRays (string _name, Vector3 pos, Vector3 dir)
+    {
+        networkPlayers[_name].InstantiateBullet(pos, dir);
+    }
 }
