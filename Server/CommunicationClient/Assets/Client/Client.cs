@@ -23,9 +23,11 @@ public class Client : MonoBehaviour
 
     TcpClient client;
 
-    NetworkSpawn[] spawnPositions;
+    public NetworkSpawn[] spawnPositions;
 
     private string playerName;
+
+    int servershit;
 
     Vector3 currentVector;
     string message;
@@ -34,10 +36,14 @@ public class Client : MonoBehaviour
     Vector3 currentPos;
     Vector3 currentDir;
 
+    NetworkSpawn obSpawn;
+
     bool execute;
     bool executeInstantiation;
     bool execVector;
     bool execRay;
+
+    bool spawnOther;
 
     List<string> playersNames = new List<string>(); //IMPORTANT: Please do this later with Player Objects and in dictionary.
 
@@ -48,11 +54,6 @@ public class Client : MonoBehaviour
             Destroy(Instance);
         }
         Instance = this;
-    }
-
-    private void Start()
-    {
-        spawnPositions = FindObjectsOfType<NetworkSpawn>();
     }
 
     public void SetLocalClientName(string _name)
@@ -87,7 +88,8 @@ public class Client : MonoBehaviour
 
         if(executeInstantiation == true)
         {
-            InstantiatePlayers();
+            InstantiateThisPlayer();
+            //GameManager.Instance.InstantiateNetworkPlayers();
             //string s = "";
             //foreach (string pl in playersNames)
             //{
@@ -108,6 +110,17 @@ public class Client : MonoBehaviour
             GameManager.Instance.HandleRays(currentSender, currentPos, currentDir);
             execRay = false;
         }
+
+        if (spawnOther)
+        {
+            GameObject playerGO = Instantiate(playerPrefab, obSpawn.transform.position, Quaternion.identity);
+            playerGO.name = currentSender;
+            playerGO.GetComponent<MeshRenderer>().material.color = NetworkColor.GetColor(obSpawn.GetName());
+
+            GameManager.Instance.AddNetworkPlayer(currentSender, playerGO.GetComponent<NetworkPlayer>());
+
+            spawnOther = false;
+        }
     }
 
     void StringCallback(string sender, string data)
@@ -125,6 +138,18 @@ public class Client : MonoBehaviour
             }
             return;
         }
+        
+        foreach(NetworkSpawn spawn in spawnPositions)
+        {
+            if(data == spawn.GetName())
+            {
+                obSpawn = spawn;
+                currentSender = sender;
+                spawnOther = true;
+                return;
+            }
+        }
+
         message = sender + ": " + data;
         execute = true;
     }
@@ -149,32 +174,13 @@ public class Client : MonoBehaviour
         execRay = true;
     }
 
-    void InstantiatePlayers()
+    void InstantiateThisPlayer()
     {
-        foreach(string player in playersNames)
-        {
-            foreach (NetworkSpawn spawn in spawnPositions)
-            {
-                if (!spawn.GetSpawned())
-                {
-                    GameObject playerGO = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-                    playerGO.name = player;
-                    spawn.SetSpawned();
-                    break;
-                }
-            }
-        }
-        foreach (NetworkSpawn spawn in spawnPositions)
-        {
-            if (!spawn.GetSpawned())
-            {
-                GameObject playerSGO = Instantiate(playerSelfPrefab, Vector3.zero, Quaternion.identity);
-                playerSGO.name = playerName;
-                spawn.SetSpawned();
-                break;
-            }
-        }
-        GameManager.Instance.InstantiateNetworkPlayers();
+        GameObject playerSGO = Instantiate(playerSelfPrefab, spawnPositions[servershit].transform.position, Quaternion.identity);
+        playerSGO.name = playerName;
+        playerSGO.GetComponent<MeshRenderer>().material.color = NetworkColor.GetColor(spawnPositions[servershit].GetName());
+
+        spawnPositions[servershit].SetSpawned();
     }
 
     void GetData ()
@@ -198,10 +204,17 @@ public class Client : MonoBehaviour
                 int serverBytesRead = stream.Read(serverMsgBytes, 0, serverMsgBytes.Length);
                 string serverMsg = Encoding.ASCII.GetString(serverMsgBytes, 0, serverBytesRead);
 
-                if(serverMsg == "start")
+                byte[] onebyte = new byte[1];
+                int oneByteRead = stream.Read(onebyte, 0, onebyte.Length);
+                string onenum = Encoding.ASCII.GetString(onebyte, 0, oneByteRead);
+
+                servershit = int.Parse(onenum);
+
+                if (serverMsg == "start")
                 {
                     HandleStart();
                 }
+
             }
 
             if(checkMsg == "client")

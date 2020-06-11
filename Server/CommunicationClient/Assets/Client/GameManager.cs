@@ -26,6 +26,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void AddNetworkPlayer(string n, NetworkPlayer player)
+    {
+        networkPlayers.Add(n, player);
+    }
+
     public void HandleVectors (string _name, Vector3 posn)
     {
         networkPlayers[_name].UpdatePosition(posn);

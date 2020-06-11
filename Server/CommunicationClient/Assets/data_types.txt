@@ -7,6 +7,10 @@ RAY (2 vectors)
 structure:
 SERVER/CLIENT>
 if CLIENT: NAME_LEN, NAME, TYPE, DATA_LEN, DATA
-if SERVER: MESSAGE
+if SERVER: MESSAGE SERVERINT
+
+colors:
+Anubis = RED
+Carton = BLUE
 
 *used start word: prologrfootrimplix #change this later please.

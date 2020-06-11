@@ -572,7 +572,7 @@ ScriptsOnlyBuild:
     className: Slider
   - hash:
       serializedVersion: 2
-      Hash: c38a70e1978b033e5d30990fb5501518
+      Hash: 76764bd948fd4f922b83cef2ae0f214b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Client
