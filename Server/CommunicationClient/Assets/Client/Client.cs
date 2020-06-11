@@ -157,7 +157,7 @@ public class Client : MonoBehaviour
             {
                 if (!spawn.GetSpawned())
                 {
-                    GameObject playerGO = Instantiate(playerPrefab, spawn.transform.position, Quaternion.identity);
+                    GameObject playerGO = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
                     playerGO.name = player;
                     spawn.SetSpawned();
                     break;
@@ -168,7 +168,7 @@ public class Client : MonoBehaviour
         {
             if (!spawn.GetSpawned())
             {
-                GameObject playerSGO = Instantiate(playerSelfPrefab, spawn.transform.position, Quaternion.identity);
+                GameObject playerSGO = Instantiate(playerSelfPrefab, Vector3.zero, Quaternion.identity);
                 playerSGO.name = playerName;
                 spawn.SetSpawned();
                 break;

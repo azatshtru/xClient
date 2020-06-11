@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerController))]
 public class LocalTransformSync : MonoBehaviour
 {
     public float updateWaitTime = 0.2f;
@@ -13,7 +12,7 @@ public class LocalTransformSync : MonoBehaviour
     void Start()
     {
         playerController = GetComponent<PlayerController>();
-        StartCoroutine(SendPosition());
+        //StartCoroutine(SendPosition());
     }
 
     IEnumerator SendPosition()

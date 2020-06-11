@@ -12,7 +12,10 @@ GameObject:
   - component: {fileID: 1494961186345858685}
   - component: {fileID: 1317941719185214623}
   - component: {fileID: 3115121078625402585}
-  m_Layer: 0
+  - component: {fileID: -3103617540200620560}
+  - component: {fileID: 733854619354987585}
+  - component: {fileID: -2220205926463018121}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,3 +95,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4c807f7bb77f4d4882845074d270476, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shootVelocity: 20
+  playerForce: 500
+--- !u!54 &-3103617540200620560
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758733893928978966}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 120
+  m_CollisionDetection: 0
+--- !u!135 &733854619354987585
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758733893928978966}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-2220205926463018121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758733893928978966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55d4df6b7f5c16247951b7a7c1d36dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityMultiplier: 1.5

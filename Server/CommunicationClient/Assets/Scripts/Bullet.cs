@@ -19,7 +19,6 @@ public class Bullet : MonoBehaviour
         dir = _dir;
         velocity = _velocity;
 
-        Debug.Log(dir);
         StartCoroutine(DestroyThis());
     }
 
