@@ -27,4 +27,17 @@ public class Bullet : MonoBehaviour
         yield return new WaitForSeconds(1.25f);
         Destroy(gameObject);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.name == owner)
+        {
+            return;
+        }
+        if (other.GetComponent<Health>())
+        {
+            other.GetComponent<Health>().TakeDamage(20);
+        }
+        Destroy(gameObject);
+    }
 }

@@ -36,12 +36,15 @@ public class Client : MonoBehaviour
     Vector3 currentPos;
     Vector3 currentDir;
 
+    int currentNumber;
+
     NetworkSpawn obSpawn;
 
     bool execute;
     bool executeInstantiation;
     bool execVector;
     bool execRay;
+    bool execNumber;
 
     bool spawnOther;
 
@@ -111,6 +114,12 @@ public class Client : MonoBehaviour
             execRay = false;
         }
 
+        if (execNumber)
+        {
+            GameManager.Instance.HandleHealth(currentSender, currentNumber);
+            execNumber = false;
+        }
+
         if (spawnOther)
         {
             GameObject playerGO = Instantiate(playerPrefab, obSpawn.transform.position, Quaternion.identity);
@@ -156,7 +165,9 @@ public class Client : MonoBehaviour
 
     void NumberCallback (string sender, int number)
     {
-        //do something with the info.
+        currentSender = sender;
+        currentNumber = number;
+        execNumber = true;
     }
 
     void VectorCallback (string sender, Vector3 vector)
@@ -179,6 +190,9 @@ public class Client : MonoBehaviour
         GameObject playerSGO = Instantiate(playerSelfPrefab, spawnPositions[servershit].transform.position, Quaternion.identity);
         playerSGO.name = playerName;
         playerSGO.GetComponent<MeshRenderer>().material.color = NetworkColor.GetColor(spawnPositions[servershit].GetName());
+
+        playerSGO.GetComponent<Health>().SetHealthStatus();
+        CameraController.Instance.AddPlayerView(playerSGO.transform);
 
         spawnPositions[servershit].SetSpawned();
     }

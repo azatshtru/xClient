@@ -41,7 +41,7 @@ public class PlayerShooting : MonoBehaviour
             }
         }
 #elif UNITY_ANDROID
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 

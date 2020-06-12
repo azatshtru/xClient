@@ -9,16 +9,23 @@ public class NetworkPlayer : MonoBehaviour
 
     GameObject bulletPrefab;
     Rigidbody rb;
+    Health h;
 
     private void Start()
     {
         bulletPrefab = Resources.Load("Bullet") as GameObject;
         rb = GetComponent<Rigidbody>();
+        h = GetComponent<Health>();
     }
 
     public void UpdatePosition(Vector3 posn)
     {
         transform.position = posn;
+    }
+
+    public void UpdateHealth (int _health)
+    {
+        h.SetNetworkedHealth(_health);
     }
 
     public void InstantiateBullet(Vector3 pos, Vector3 dir)

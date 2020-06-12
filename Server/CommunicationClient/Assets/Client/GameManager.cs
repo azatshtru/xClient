@@ -31,6 +31,11 @@ public class GameManager : MonoBehaviour
         networkPlayers.Add(n, player);
     }
 
+    public void HandleHealth (string _name, int health)
+    {
+        networkPlayers[_name].UpdateHealth(health);
+    }
+
     public void HandleVectors (string _name, Vector3 posn)
     {
         networkPlayers[_name].UpdatePosition(posn);
